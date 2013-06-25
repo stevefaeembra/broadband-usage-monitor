@@ -15,7 +15,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 #
 # 
-# Generate nice-looking hourly and daily reports
+# Generate nice-looking hourly and daily reports from the output of dumpusage.sh
 # e.g. 
 #--------------------------------------------------------------------------------
 #Hourly Internet bandwidth usage report
