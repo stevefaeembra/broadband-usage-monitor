@@ -11,7 +11,7 @@ if [ ! -f ~/bandwidth.csv ]
 then
     echo -e "Timestamp,Bytes Downloaded,Bytes Uploaded" >> ~/bandwidth.csv
 fi
-echo -n `date "+%s"` >> ~/bandwidth.csv
+echo -n `date "+%Y%m%d%H%M"` >> ~/bandwidth.csv
 echo -n -e "," >> ~/bandwidth.csv
 echo -n -e `ifconfig -a $interface | grep "RX bytes" | sed "s/TX.*//" | sed "s/.*[:]//" | sed "s/\s.*//"` >> ~/bandwidth.csv
 echo -n -e "," >> ~/bandwidth.csv
