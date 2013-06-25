@@ -35,6 +35,7 @@
 #--------------------------------------------------------------------------------
             
 from datetime import datetime
+import os
 
 # This can be either "K" (kilobyte = 1000 bytes) or "Ki" (Kibibyte = 1024 bytes)
 units="K" 
@@ -177,6 +178,7 @@ class entry(object):
     def __repr__(self):
         return "%s\tDown:%s\tUp:%s" % (self.dt, humanreadable(self.downstream), humanreadable(self.upstream))
         
-
-batcher = reportbatcher(open("/home/steven/bandwidth.csv","r"))
+home = os.path.expanduser("~") 
+logfilename = "%s/%s" % (home, "bandwidth.csv") 
+batcher = reportbatcher(open(logfilename,"r"))
 
