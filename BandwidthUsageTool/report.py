@@ -73,6 +73,9 @@ def getdtfromtimestamp(timestamp):
 
 class reportbatcher(object):
     
+    '''
+    reads in the report and sorts/groups entries into days and hours
+    '''
     def __init__(self, csv_input_flo):
         self.hours = {}
         self.days = {}
@@ -123,6 +126,9 @@ class reportbatcher(object):
             self.hours[hourkey].append(entry)
             
     def computetrafficforhour(self, key):
+        '''
+        computes up/down traffic for a given hour e.g. 2012012513 (1300-1400 on 25th Jan 2012)
+        '''
         if not key in self.hours:
             return (0, 0)
         if len(self.hours[key])<=1: # only got value at minute 2
