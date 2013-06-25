@@ -1,6 +1,42 @@
+#
+# Broadband usage monitoring script - Report Generator
+#    Copyright (C) 2013 Steven Kay
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>
+#
+# 
+# Generate nice-looking hourly and daily reports
+# e.g. 
+#--------------------------------------------------------------------------------
+#Hourly Internet bandwidth usage report
+#      Hour Beginning            Download              Upload
+#          2013062513             1.07 MB             1.23 MB
+#          2013062514            83.40 MB             6.77 MB
+#          2013062515             3.75 MB             1.57 MB
+#          2013062516            12.47 MB           679.91 KB
+#          2013062517             3.25 MB           624.94 KB
+#          2013062518           267.91 MB             8.82 MB
+#          2013062519            11.15 MB           607.24 KB
+#          2013062520           188.92 KB            70.88 KB
+#--------------------------------------------------------------------------------
+#Daily Internet bandwidth usage report
+#                Date            Download              Upload
+#            20130625           383.19 MB            20.37 MB
+#--------------------------------------------------------------------------------
+            
 from datetime import datetime
 
-# change to K for 1000, Ki for 1024
+# This can be either "K" (kilobyte = 1000 bytes) or "Ki" (Kibibyte = 1024 bytes)
 units="K" 
 
 def humanreadable(amt):
@@ -53,6 +89,7 @@ class reportbatcher(object):
         self.hourlyreport(self.hours)
         print "-" * 80
         self.dailyreport(self.hours)
+        print "-" * 80
         
         
     def dailyreport(self, hourdata):

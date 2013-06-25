@@ -1,9 +1,41 @@
 #!/bin/bash
-# writes the total number of bytes received and transmitted over a network interface
-# used as a poor man's bandwidth monitoring utility for those, like me, without all-you-can-eat broadband plans :)
-# writes to ~/bandwidth.csv
-# if running from cron, remember to make sure that the cron path is set up to find ifconfig, and that the bandwidth.log
-# has permissions set to allow writing from the cron job user
+#
+# Broadband usage monitoring script
+#    Copyright (C) 2013 Steven Kay
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>
+#
+# 
+# This is a Unix shell script I wrote to allow me to monitor my (not-unlimited) broadband usage, and also to
+# get a feel for the bandwidth requirements of certain applications, downloads and sites.
+#
+# This is intended to be run from a cron job on a minute-by-minute basis (or at least, several times an hour)
+# For example, 
+# */1 * * * * /home/steven/dumpusage.sh
+#
+# This script writes to a csv log, scraping the output of ifconfig
+# The file format is
+#
+# Timestamp (yyyymmddhhmm), Bytes Downloaded, Bytes Uploaded
+#
+# The number of bytes is a snapshot of the total, NOT the number of bytes since the last execution 
+# If the system is rebooted or you log out, these totals are reset
+#
+# If running from cron, you'll need to make sure that ifconfig is added to the path in cron, and that the log file is
+# writable by whatever user cron is running under
+# 
+# Use the report.py python script provided to provide a nicer view of the data
+#
 
 interface="eth1"
 
