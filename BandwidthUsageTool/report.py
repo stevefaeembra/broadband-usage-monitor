@@ -87,9 +87,9 @@ class reportbatcher(object):
             
     def computetrafficforhour(self, key):
         if not key in self.hours:
-            return 0
+            return (0, 0)
         if len(self.hours[key])<=1: # only got value at minute 2
-            return 0
+            return (0, 0)
         startdown = self.hours[key][0].downstream
         startup  = self.hours[key][0].upstream
         total_down = 0
