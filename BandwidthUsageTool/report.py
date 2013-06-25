@@ -1,7 +1,7 @@
 from datetime import datetime
 
 # change to K for 1000, Ki for 1024
-units="Ki" 
+units="K" 
 
 def humanreadable(amt):
     if units=="Ki":
@@ -10,6 +10,7 @@ def humanreadable(amt):
         return humanreadableK(amt)
 
 def humanreadableK(amt):
+    ''' human readable, Kilobytes (1000) etc, powers of 10 '''
     if amt<1000000:
         return "%2.2f KB" % (amt/1000.0,)
     if amt<1000000000:
@@ -17,6 +18,7 @@ def humanreadableK(amt):
     return "%2.2f GB" % (amt/1000000000.0,)
 
 def humanreadableKi(amt):
+    ''' human readable, Kibibytes etc (powers of 2, old skool) '''
     if amt<2**20:
         return "%2.2f KiB" % (amt/2**10.0,)
     if amt<2**30:
@@ -25,6 +27,7 @@ def humanreadableKi(amt):
 
 
 def getdtfromtimestamp(timestamp):
+    ''' convert yyyymmddhhmm to datetime '''
     year = int(timestamp[0:4])
     month = int(timestamp[4:6])
     day = int(timestamp[6:8])
@@ -36,6 +39,7 @@ class reportbatcher(object):
     
     def __init__(self, csv_input_flo):
         self.hours = {}
+        self.days = {}
         skip = 1
         for line in csv_input_flo:
             skip = skip - 1
@@ -45,10 +49,29 @@ class reportbatcher(object):
                 down = float(fields[1])
                 up = float(fields[2])
                 self.tally(entry(fields[0], down, up))
-        self.report(self.hours)
+        print "-" * 80
+        self.hourlyreport(self.hours)
+        print "-" * 80
+        self.dailyreport(self.hours)
         
-    def report(self, hourdata):
-        print "Internet bandwidth usage report"
+        
+    def dailyreport(self, hourdata):
+        print "Daily Internet bandwidth usage report"
+        print "%20s%20s%20s" % ("Date","Download","Upload")
+        for hourlist in sorted(hourdata):
+            down, up = self.computetrafficforhour(hourlist)
+            daykey = self.hours[hourlist][0].timestamp[0:8]
+            if not daykey in self.days:
+                self.days[daykey] = ((down,up))
+            else:
+                lastdown, lastup = self.days[daykey]
+                self.days[daykey] = ((down + lastdown, up + lastup))
+        for daykey in sorted(self.days):
+            down, up = self.days[daykey]
+            print "%20s%20s%20s" % (daykey, humanreadable(down), humanreadable(up))
+    
+    def hourlyreport(self, hourdata):
+        print "Hourly Internet bandwidth usage report"
         print "%20s%20s%20s" % ("Hour Beginning","Download","Upload")
         for hourlist in sorted(hourdata):
             down, up = self.computetrafficforhour(hourlist)
@@ -56,16 +79,16 @@ class reportbatcher(object):
         
         
     def tally(self, entry):
-        key = entry.timestamp[0:10] # up to and including the hour
-        if not key in self.hours:
-            self.hours[key] = [entry]
+        hourkey = entry.timestamp[0:10] # up to and including the hour
+        if not hourkey in self.hours:
+            self.hours[hourkey] = [entry]
         else:
-            self.hours[key].append(entry)
+            self.hours[hourkey].append(entry)
             
     def computetrafficforhour(self, key):
         if not key in self.hours:
             return 0
-        if len(self.hours[key])==1: # only got value at minute 2
+        if len(self.hours[key])<=1: # only got value at minute 2
             return 0
         startdown = self.hours[key][0].downstream
         startup  = self.hours[key][0].upstream
